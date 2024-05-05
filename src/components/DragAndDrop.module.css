@@ -1,0 +1,45 @@
+.outline {
+  position: relative;
+  width: 100%;
+  height: 150px;
+  border: 1px solid #3f3d3d;
+  border-radius: 17px;
+  margin-bottom: 20px;
+  /* background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='17' ry='17' stroke='%23F9F9F9FF' stroke-width='2' stroke-dasharray='14%2c 25' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e"); */
+  /* https://kovart.github.io/dashed-border-generator/ */
+}
+
+.hidden {
+  display: none;
+}
+
+.form {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  justify-content: flex-end;
+  background-color: transparent;
+}
+
+.form_dragging {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  justify-content: flex-end;
+  background-color: #3f3f3f;
+}
+
+.select_files {
+  cursor: pointer;
+}
+
+.select_files:hover {
+  color: rgb(17, 140, 255);
+}
+
+.image_preview_outline {
+}
