@@ -35,10 +35,11 @@
 
 .select_files {
   cursor: pointer;
+  color: rgb(17, 140, 255);
 }
 
 .select_files:hover {
-  color: rgb(17, 140, 255);
+  color: rgb(5, 96, 182);
 }
 
 .image_preview_outline {

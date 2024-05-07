@@ -28,21 +28,3 @@
   /* border: 1px solid white; */
   height: fit-content;
 }
-
-.submitButton {
-  display: block;
-  border-radius: 20px;
-  width: 200px;
-  height: 50px;
-  margin-inline: auto;
-  background-color: #445eb9;
-  border: transparent;
-  cursor: pointer;
-  color: #ededed;
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.submitButton:hover {
-  background-color: #8292cc;
-}

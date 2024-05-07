@@ -1,23 +1,20 @@
 'use client';
-import { useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import styles from './DragAndDrop.module.css';
 import Image from 'next/image';
+import { useFileContext } from '@/app/contexts/FileContext';
 
 export default function DragAndDrop() {
-  const [files, setFiles] = useState<any>([]);
+  const { files, setFiles } = useFileContext();
   const [dragActive, setDragActive] = useState<boolean>(false);
   const inputRef = useRef<any>(null);
 
   const handleChange = (ev: any) => {
     ev.preventDefault();
-    console.log(ev);
 
     if (ev.target.files && ev.target.files[0]) {
       for (let i = 0; i < ev.target.files['length']; i++) {
-        setFiles((prevState: any) => [
-          ...prevState,
-          URL.createObjectURL(ev.target.files[i]),
-        ]);
+        setFiles((prevState: any) => [...prevState, ev.target.files[i]]);
       }
     }
   };
