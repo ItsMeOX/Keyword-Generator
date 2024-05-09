@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server';
-import { NextApiRequest, NextApiResponse } from 'next';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import fs from 'fs';
+import { useSettingContext } from '@/app/contexts/SettingContext';
+import { headers } from 'next/headers';
 
 type ResponseData = {
   text?: string;
@@ -21,8 +21,11 @@ function fileToGenerativePart(arrayBuffer: ArrayBuffer, mimeType: string) {
 }
 
 export async function POST(req: NextRequest, res: NextResponse<ResponseData>) {
+  const headersList = headers();
+  const keywordCount = headersList.get('keywordCount') || '30';
+
   try {
-    const prompt = 'Generate 30 single-worded keywords, separated by commas';
+    const prompt = `Generate ${keywordCount} single-worded keywords, separated by commas`;
 
     const formData = await req.formData();
 
@@ -49,7 +52,7 @@ export async function POST(req: NextRequest, res: NextResponse<ResponseData>) {
       }
     );
   } catch (error) {
-    console.log(error);
+    console.error(error);
     let message;
     if (error instanceof Error) message = error.message;
     else message = String(error);

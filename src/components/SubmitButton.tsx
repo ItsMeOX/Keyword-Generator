@@ -2,7 +2,8 @@ import { MJMessage } from 'midjourney';
 import { useFileContext } from '@/app/contexts/FileContext';
 import styles from './SubmitButton.module.css';
 import React from 'react';
-import fs from 'fs';
+import getPromptsArray from '@/app/utils/getPromptsArray';
+import { useSettingContext } from '@/app/contexts/SettingContext';
 
 function downloadTextFile(text: string) {
   const data = new Blob([text], { type: 'text/plain' });
@@ -15,44 +16,6 @@ function downloadTextFile(text: string) {
 
   URL.revokeObjectURL(textFile);
   link.remove();
-}
-
-function arrayBufferToString(arrayBuffer: ArrayBuffer) {
-  const decoder = new TextDecoder('utf-8');
-  const arr = new Uint8Array(arrayBuffer);
-  const str = decoder.decode(arr);
-  return str;
-}
-
-function getPromptsArray(promptFile: File): Promise<string[]> {
-  // Get a list of string splitted by '\n'
-  return new Promise((resolve, reject) => {
-    if (promptFile?.size === 0) resolve([]);
-
-    const fileReader = new FileReader();
-    let promptsArray: string[];
-
-    fileReader.onload = (event) => {
-      let prompts = event!.target!.result;
-      if (prompts instanceof ArrayBuffer) {
-        prompts = arrayBufferToString(prompts);
-      }
-
-      promptsArray = prompts!.split('\n');
-
-      promptsArray = promptsArray.filter((str) => {
-        return str.trim().length !== 0;
-      });
-
-      resolve(promptsArray);
-    };
-
-    fileReader.onerror = (error) => {
-      reject(error);
-    };
-
-    fileReader.readAsText(promptFile);
-  });
 }
 
 async function getImagesFromPrompts(promptFile: File) {
@@ -93,7 +56,10 @@ async function getImagesFromPrompts(promptFile: File) {
   return imgFiles;
 }
 
-async function getKeywordFromImages(files: File[]): Promise<string[]> {
+async function getKeywordFromImages(
+  files: File[],
+  keywordCount: string
+): Promise<string[]> {
   const keywords: string[] = [];
 
   for (let i = 0; i < files.length; i++) {
@@ -103,6 +69,9 @@ async function getKeywordFromImages(files: File[]): Promise<string[]> {
     formData.append(file.name, file, file.name);
 
     const response = await fetch('/api/gemini', {
+      headers: {
+        keywordCount: keywordCount,
+      },
       method: 'POST',
       body: formData,
     });
@@ -121,19 +90,23 @@ async function getKeywordFromImages(files: File[]): Promise<string[]> {
 
 export default function SubmitButton() {
   const { files, setFiles } = useFileContext();
+  const { keywordCount, setKeywordCount } = useSettingContext();
 
   const onSubmit = async (ev: any) => {
+    if (parseInt(keywordCount) <= 0) {
+      throw new Error('Invalid keyword count.');
+    }
+
     let keywords: string[] = [];
 
     for (let file of files) {
       if (file.type.startsWith('text/')) {
         const imagesFile = await getImagesFromPrompts(file);
-        const keyword = await getKeywordFromImages(imagesFile);
+        const keyword = await getKeywordFromImages(imagesFile, keywordCount);
         keywords = keywords.concat(keyword);
       } else if (file.type.startsWith('image/')) {
-        const keyword = await getKeywordFromImages([file]);
+        const keyword = await getKeywordFromImages([file], keywordCount);
         keywords = keywords.concat(keyword);
-        console.log(keywords);
       }
     }
 
