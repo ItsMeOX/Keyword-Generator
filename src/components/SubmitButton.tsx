@@ -12,7 +12,7 @@ export default function SubmitButton() {
   const { files, setFiles } = useFileContext();
 
   const onSubmit = async (ev: any) => {
-    if (files.length === 0) return;
+    // if (files.length === 0) return;
 
     const formData = new FormData();
     for (let i = 0; i < files.length; i++) {
@@ -22,23 +22,32 @@ export default function SubmitButton() {
 
     setFiles([]);
 
-    const response = await fetch('/api/gemini', {
+    // const response = await fetch('/api/gemini', {
+    //   method: 'POST',
+    //   body: formData,
+    // });
+
+    // const data = await response.json();
+
+    // if (response.ok) {
+    //   const textFile = makeTextFile(data.text);
+    //   const link = document.createElement('a');
+    //   link.href = textFile;
+    //   link.download = 'output.txt';
+    //   link.click();
+    //   URL.revokeObjectURL(textFile);
+    // } else {
+    //   throw new Error(data.errorMessage);
+    // }
+
+    const response = await fetch('/api/midjourney', {
       method: 'POST',
-      body: formData,
+      body: 'a',
     });
 
     const data = await response.json();
 
-    if (response.ok) {
-      const textFile = makeTextFile(data.text);
-      const link = document.createElement('a');
-      link.href = textFile;
-      link.download = 'output.txt';
-      link.click();
-      URL.revokeObjectURL(textFile);
-    } else {
-      throw new Error(data.errorMessage);
-    }
+    console.log(data);
   };
 
   return (

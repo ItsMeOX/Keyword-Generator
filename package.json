@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@google/generative-ai": "^0.10.0",
+    "midjourney": "^4.3.17",
     "next": "^14.2.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
@@ -21,5 +22,8 @@
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
     "typescript": "^5"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.8"
   }
 }
