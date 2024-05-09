@@ -14,7 +14,7 @@ export default function DragAndDrop() {
 
     if (ev.target.files && ev.target.files[0]) {
       for (let i = 0; i < ev.target.files['length']; i++) {
-        setFiles((prevState: any) => [...prevState, ev.target.files[i]]);
+        setFiles((prevState: File[]) => [...prevState, ev.target.files[i]]);
       }
     }
   };
@@ -45,10 +45,7 @@ export default function DragAndDrop() {
 
     if (ev.target.files && ev.target.files[0]) {
       for (let i = 0; i < ev.target.files['length']; i++) {
-        setFiles((prevState: any) => [
-          ...prevState,
-          URL.createObjectURL(ev.target.files[i]),
-        ]);
+        setFiles((prevState: File[]) => [...prevState, ev.target.files[i]]);
       }
     }
   };
@@ -72,7 +69,7 @@ export default function DragAndDrop() {
           type="file"
           placeholder="fileInput"
           multiple={true}
-          accept="image/*"
+          accept="image/*,.txt"
           ref={inputRef}
           onChange={handleChange}
         />

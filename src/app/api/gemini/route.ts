@@ -22,7 +22,7 @@ function fileToGenerativePart(arrayBuffer: ArrayBuffer, mimeType: string) {
 
 export async function POST(req: NextRequest, res: NextResponse<ResponseData>) {
   try {
-    const prompt = 'Generate 30 keywords for the image, separated by commas';
+    const prompt = 'Generate 30 single-worded keywords, separated by commas';
 
     const formData = await req.formData();
 
@@ -37,10 +37,10 @@ export async function POST(req: NextRequest, res: NextResponse<ResponseData>) {
       }
     }
 
-    const text = 'hello :)';
+    // const text = 'hello :)';
 
-    // const result = await model.generateContent([prompt, ...imageParts]);
-    // const text = result.response.text();
+    const result = await model.generateContent([prompt, ...imageParts]);
+    const text = result.response.text().trim() + '\n';
 
     return NextResponse.json(
       { text },

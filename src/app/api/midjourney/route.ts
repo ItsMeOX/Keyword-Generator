@@ -1,11 +1,11 @@
 import { NextResponse, NextRequest } from 'next/server';
-import { Midjourney } from 'midjourney';
+import { MJMessage, Midjourney } from 'midjourney';
 
 const client = new Midjourney({
   SalaiToken: process.env.MIDJOURNEY_TOKEN as string,
   ServerId: process.env.DISCORD_SERVER_ID,
   ChannelId: process.env.DISCORD_CHANNEL_ID,
-  Debug: true,
+  //   Debug: true,
   Ws: true,
 });
 
@@ -14,35 +14,42 @@ function randomIntFromInterval(lower: number, upper: number) {
 }
 
 async function sleepRandomMS() {
-  await new Promise((r) => setTimeout(r, randomIntFromInterval(300, 800)));
+  await new Promise((r) => setTimeout(r, randomIntFromInterval(800, 1500)));
 }
 
 export async function POST(req: NextRequest, res: NextResponse) {
-  console.log('a');
   await client.init();
+  const upScales: MJMessage[] = [];
 
-  const prompt = 'testing';
+  const body = await req.json();
+  const { prompts }: { prompts: string[] } = body;
 
-  const Imagine = await client.Imagine(prompt);
+  for (let prompt of prompts) {
+    await sleepRandomMS();
 
-  sleepRandomMS();
+    const Imagine = await client.Imagine(prompt);
 
-  const U1CustomID = Imagine?.options?.find((o) => o.label === 'U1')?.custom;
+    await sleepRandomMS();
 
-  if (U1CustomID) {
-    const UpScale = await client.Custom({
-      msgId: Imagine.id as string,
-      flags: Imagine.flags,
-      customId: U1CustomID,
-    });
-  } else {
-    console.log('NO U1CustomID!!!');
+    const U1CustomID = Imagine?.options?.find((o) => o.label === 'U1')?.custom;
+
+    if (U1CustomID) {
+      const UpScale = await client.Custom({
+        msgId: Imagine.id as string,
+        flags: Imagine.flags,
+        customId: U1CustomID,
+      });
+      if (UpScale) upScales.push(UpScale);
+      else console.log('Upscale error.');
+    } else {
+      console.log('No U1CustomID.');
+    }
   }
 
   client.Close();
 
   return NextResponse.json(
-    { Imagine },
+    { upScales },
     {
       status: 200,
     }

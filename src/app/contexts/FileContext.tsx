@@ -3,8 +3,8 @@
 import React, { createContext, useContext, useState } from 'react';
 
 interface FileContext {
-  files: any[];
-  setFiles: React.Dispatch<React.SetStateAction<any>>;
+  files: File[];
+  setFiles: React.Dispatch<React.SetStateAction<File[]>>;
 }
 
 const FileContext = createContext<FileContext | undefined>(undefined);
@@ -14,7 +14,7 @@ export default function FileContextProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [files, setFiles] = useState<any[]>([]);
+  const [files, setFiles] = useState<File[]>([]);
 
   return (
     <FileContext.Provider value={{ files, setFiles }}>
