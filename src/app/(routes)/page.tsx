@@ -27,8 +27,6 @@ export default function Home() {
               </section>
 
               <section className={styles.section}>
-                <h2 className={styles.subTitle}>Prompt File</h2>
-                <DragAndDrop />
                 <PromptsCountDisplay />
               </section>
             </div>

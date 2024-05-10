@@ -1,5 +1,6 @@
 import { useFileContext } from '@/app/contexts/FileContext';
 import { useEffect, useState } from 'react';
+import styles from './ImageCountDisplay.module.css';
 
 async function getImagesCount(files: File[]): Promise<number> {
   let imagesCount = 0;
@@ -30,8 +31,9 @@ export default function ImagesCountDisplay() {
   }, [files]);
 
   return (
-    <p>{`Total images: ${
-      imagesCount === null ? 'fetching...' : imagesCount
-    }`}</p>
+    <p>
+      Total images:{' '}
+      <span>{`${imagesCount === null ? 'fetching...' : imagesCount}`}</span>
+    </p>
   );
 }
