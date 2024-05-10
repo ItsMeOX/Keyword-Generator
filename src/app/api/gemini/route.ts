@@ -3,6 +3,8 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { useSettingContext } from '@/app/contexts/SettingContext';
 import { headers } from 'next/headers';
 
+export const maxDuration = 60;
+
 type ResponseData = {
   text?: string;
   errorMessage?: string;
