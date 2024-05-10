@@ -1,0 +1,59 @@
+.outline {
+  width: 100%;
+  height: 300px;
+  border: 1px solid #767676;
+  border-radius: 20px;
+  padding: 15px 0px 20px 0px;
+  overflow-y: scroll;
+}
+
+.outline::-webkit-scrollbar {
+  display: none;
+}
+
+.spanNormal {
+  margin-top: 5px;
+  margin-inline: 20px;
+  display: block;
+  color: white;
+}
+
+.spanError {
+  margin-top: 5px;
+  margin-inline: 20px;
+  display: block;
+  color: #e26363;
+}
+
+.spanSuccess {
+  margin-top: 5px;
+  margin-inline: 20px;
+  display: block;
+  color: #77c070;
+}
+
+.button {
+  display: block;
+  width: 100px;
+  height: 38px;
+  line-height: 38px;
+  border-radius: 12px;
+  margin-top: 10px;
+  margin-left: auto;
+  border: none;
+  background-color: #ff5656;
+  color: white;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: #f79a9a;
+}
+
+.buttonIcon {
+  margin-bottom: 5px;
+  margin-right: 5px;
+  vertical-align: middle;
+}

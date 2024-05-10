@@ -2,7 +2,8 @@
   position: relative;
   margin-inline: auto;
   margin-top: 2%;
-  padding: 1% 4% 2% 4%;
+  margin-bottom: 2%;
+  padding: 10px 40px 40px 40px;
   max-width: 1000px;
   height: fit-content;
   border: 1px solid #767676;
@@ -27,4 +28,8 @@
   position: relative;
   /* border: 1px solid white; */
   height: fit-content;
+}
+
+.section:not(:first-child) {
+  margin-top: 50px;
 }

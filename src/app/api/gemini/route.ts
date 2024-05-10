@@ -26,6 +26,7 @@ export async function POST(req: NextRequest, res: NextResponse<ResponseData>) {
 
   try {
     const prompt = `Generate ${keywordCount} single-worded keywords, separated by commas`;
+    console.log(keywordCount);
 
     const formData = await req.formData();
 
@@ -44,6 +45,7 @@ export async function POST(req: NextRequest, res: NextResponse<ResponseData>) {
 
     const result = await model.generateContent([prompt, ...imageParts]);
     const text = result.response.text().trim() + '\n';
+    console.log(text);
 
     return NextResponse.json(
       { text },

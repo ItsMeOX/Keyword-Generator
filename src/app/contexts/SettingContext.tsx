@@ -27,7 +27,7 @@ export function useSettingContext() {
   const context = useContext(SettingContext);
   if (!context) {
     throw new Error(
-      'useSettingContext must be used within a FileContextProvider'
+      'useSettingContext must be used within a SettingContextProvider'
     );
   }
 
