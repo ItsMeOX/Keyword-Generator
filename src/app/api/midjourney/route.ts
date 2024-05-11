@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { MJMessage, Midjourney } from 'midjourney';
 
-export const maxDuration = 60;
+export const maxDuration = 300;
 
 function randomIntFromInterval(lower: number, upper: number) {
   return Math.floor(Math.random() * (upper - lower + 1) + lower);
