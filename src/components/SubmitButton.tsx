@@ -6,13 +6,46 @@ import getPromptsArray from '@/app/utils/getPromptsArray';
 import { useSettingContext } from '@/app/contexts/SettingContext';
 import createDebug from '@/app/utils/createDebug';
 import { useDebugContext } from '@/app/contexts/DebugContext';
+import JSZip from 'jszip';
+import fs from 'fs/promises';
 
 type debugContextType = {
   debugMessages: React.ReactNode[];
   setDebugMessages: React.Dispatch<React.SetStateAction<React.ReactNode[]>>;
 };
 
-function downloadTextFile(text: string) {
+async function getMainExe() {
+  return await fs.readFile('/pythonUtil/main.exe');
+}
+
+function saveAsZipFiles(content: (File | string)[]) {
+  const zip = new JSZip();
+  let kwIndex = 0;
+
+  for (let file of content) {
+    console.log(file, file instanceof File);
+    if (file instanceof File) {
+      const blob = new Blob([file], { type: 'image/png' });
+      console.log('blob filename: ', file.name + '.png');
+      zip.file(file.name + '.png', blob);
+    } else if (typeof file === 'string') {
+      zip.file(`keyword${kwIndex++}.txt`, file);
+    }
+  }
+
+  zip.generateAsync({ type: 'blob' }).then((dlContent) => {
+    const url = window.URL.createObjectURL(dlContent);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'example.zip';
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+    a.remove();
+  });
+}
+
+function saveAsTextFile(text: string) {
   const data = new Blob([text], { type: 'text/plain' });
   const textFile = URL.createObjectURL(data);
 
@@ -65,27 +98,24 @@ async function getImagesFromPrompts(
       continue;
     }
 
-    const { upScales }: { upScales: MJMessage[] } = data;
+    const { images }: { images: MJMessage[] } = data;
 
-    console.log(upScales);
+    console.log(images);
 
-    for (let upScaleIndex = 0; upScaleIndex < upScales.length; upScaleIndex++) {
-      const upScale = upScales[upScaleIndex];
+    for (let upScaleIndex = 0; upScaleIndex < images.length; upScaleIndex++) {
+      const upScale = images[upScaleIndex];
       const imgURL = upScale.proxy_url as string;
       const response2 = await fetch(imgURL);
       const blob = await response2.blob();
-      const file = new File(
-        [blob],
-        prompts[promptIndex] + `---upscale${upScaleIndex + 1}`,
-        {
-          type: 'image/png',
-        }
-      );
+      const date = new Date();
+      const file = new File([blob], `${date.getTime().toString()}`, {
+        type: 'image/png',
+      });
       imgFiles.push(file);
     }
 
     createDebug(
-      `Created upscale images for: ${prompts[promptIndex]} (${upScales.length} upscaled images)`,
+      `Created upscale images for: ${prompts[promptIndex]} (${images.length} upscaled images)`,
       'normal',
       debugMessages,
       setDebugMessages
@@ -119,7 +149,7 @@ async function getKeywordFromImages(
     const data = await response.json();
 
     if (response.ok) {
-      keywords.push(data.text);
+      keywords.push(file.name + '\n' + data.text.replace(/\*/g, ''));
       createDebug(
         `Created keyword for: ${file.name}`,
         'normal',
@@ -156,10 +186,13 @@ export default function SubmitButton() {
     }
 
     let keywords: string[] = [];
+    let images: File[] = [];
 
     for (let file of files) {
       if (file.type.startsWith('text/')) {
         const imagesFile = await getImagesFromPrompts(file, debugContext);
+        images = images.concat(imagesFile);
+
         const keyword = await getKeywordFromImages(
           imagesFile,
           keywordCount,
@@ -176,9 +209,12 @@ export default function SubmitButton() {
       }
     }
 
+    const joinedFiles: (File | string)[] = [...images, ...keywords];
+    saveAsZipFiles(joinedFiles);
+
     if (keywords.length !== 0) {
       const joinedKeywords = keywords.join('');
-      downloadTextFile(joinedKeywords);
+      saveAsTextFile(joinedKeywords);
       createDebug(
         'Generation completed.',
         'success',

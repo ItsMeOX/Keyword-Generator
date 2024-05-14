@@ -1,9 +1,6 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { useSettingContext } from '@/app/contexts/SettingContext';
 import { headers } from 'next/headers';
-
-export const maxDuration = 300;
 
 type ResponseData = {
   text?: string;
@@ -27,7 +24,13 @@ export async function POST(req: NextRequest, res: NextResponse<ResponseData>) {
   const keywordCount = headersList.get('keywordCount') || '30';
 
   try {
-    const prompt = `Generate ${keywordCount} single-worded keywords, separated by commas`;
+    const prompt = `
+    Please provide the following information in the specified format for the image:
+    
+    title: (title)
+    description: (description)
+    keywords: (${keywordCount} single-word keywords separated by commas)
+    `;
     console.log(keywordCount);
 
     const formData = await req.formData();
